@@ -17,7 +17,6 @@ export const databaseProviders = [
                 ],
                 synchronize: true,
             });
-            console.log('Database connected')
             return dataSource.initialize();
         }
     }
