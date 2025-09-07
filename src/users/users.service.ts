@@ -52,4 +52,10 @@ export class UserService {
     await this.userRepository.update(id, updateUserDto);
     return product;
   }
+
+  async remove(id: number) {
+    await this.findById(id);
+    await this.userRepository.update(id, { available: false });
+    return await this.userRepository.softDelete(id);
+  }
 }
