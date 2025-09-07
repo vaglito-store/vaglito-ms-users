@@ -3,6 +3,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PaginationDto } from 'src/common';
+import { UpdateUserDto } from './dto/update.user.dto';
 
 @Injectable()
 export class UserService {
@@ -36,13 +37,19 @@ export class UserService {
 
   async findById(id: number) {
     const product = await this.userRepository.findOneBy({
-      id
+      id,
     });
 
     if (!product) {
-        throw new NotFoundException(`Product with id #${id} not found.`)
+      throw new NotFoundException(`Product with id #${id} not found.`);
     }
 
-    return product
+    return product;
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const product = await this.findById(id);
+    await this.userRepository.update(id, updateUserDto);
+    return product;
   }
 }
