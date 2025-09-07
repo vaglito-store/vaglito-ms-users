@@ -1,5 +1,5 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { User } from './interfaces/user.interface';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PaginationDto } from 'src/common';
@@ -23,14 +23,26 @@ export class UserService {
   async findAll(paginationDto: PaginationDto) {
     const { page, limit } = paginationDto;
     const [data, total] = await this.userRepository.findAndCount({
-        skip: (page - 1) * limit,
-        take: limit
+      skip: (page - 1) * limit,
+      take: limit,
     });
     return {
-        total,
-        page,
-        lastPage: Math.ceil(total/limit),
-        data,
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+      data,
+    };
+  }
+
+  async findById(id: number) {
+    const product = await this.userRepository.findOneBy({
+      id
+    });
+
+    if (!product) {
+        throw new NotFoundException(`Product with id #${id} not found.`)
     }
+
+    return product
   }
 }
