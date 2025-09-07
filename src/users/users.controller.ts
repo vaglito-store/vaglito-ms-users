@@ -14,6 +14,7 @@ import {
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './interfaces/user.interface';
+import { PaginationDto } from 'src/common';
 
 @Controller('users')
 export class UsersController {
@@ -25,9 +26,9 @@ export class UsersController {
   }
 
   @Get()
-  async findAll(): Promise<User[]> {
+  async findAll(@Query() paginationDto: PaginationDto) {
     try {
-      const users = await this.userService.findAll();
+      const users = await this.userService.findAll(paginationDto);
       return users;
     } catch (error) {
       throw new HttpException(
