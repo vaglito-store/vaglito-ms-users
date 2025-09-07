@@ -1,32 +1,26 @@
 import {
   Controller,
-  Get,
-  Post,
-  Query,
-  Param,
-  Delete,
-  Body,
   HttpException,
   HttpStatus,
   ParseIntPipe,
-  Patch,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PaginationDto } from 'src/common';
 import { UpdateUserDto } from './dto/update.user.dto';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller('users')
 export class UsersController {
   constructor(private userService: UserService) {}
 
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
+  @MessagePattern({ cmd: 'create_product' })
+  async create(@Payload() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
-  async findAll(@Query() paginationDto: PaginationDto) {
+  @MessagePattern({ cmd: 'find_all_products' })
+  async findAll(@Payload() paginationDto: PaginationDto) {
     try {
       const users = await this.userService.findAll(paginationDto);
       return users;
@@ -44,9 +38,9 @@ export class UsersController {
     }
   }
 
-  @Get(':id')
+  @MessagePattern({ cmd: 'find_one_product' })
   async findOne(
-    @Param(
+    @Payload(
       'id',
       new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
     )
@@ -55,21 +49,16 @@ export class UsersController {
     return this.userService.findById(id);
   }
 
-  @Patch(':id')
+  @MessagePattern({ cmd: 'update_product' })
   update(
-    @Param(
-      'id',
-      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
-    )
-    id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Payload() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update(updateUserDto.id, updateUserDto);
   }
 
-  @Delete(':id')
+  @MessagePattern({ cmd: 'delete_product' })
   remove(
-    @Param(
+    @Payload(
       'id',
       new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
     )
