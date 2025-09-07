@@ -52,7 +52,7 @@ export class UsersController {
     )
     id: number,
   ) {
-    return `This action returns a #${id}`;
+    return this.userService.findById(id)
   }
 
   @Put(':id')
