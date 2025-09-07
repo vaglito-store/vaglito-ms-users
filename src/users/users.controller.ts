@@ -3,18 +3,18 @@ import {
   Get,
   Post,
   Query,
-  Put,
   Param,
   Delete,
   Body,
   HttpException,
   HttpStatus,
   ParseIntPipe,
+  Patch,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './interfaces/user.interface';
 import { PaginationDto } from 'src/common';
+import { UpdateUserDto } from './dto/update.user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -52,12 +52,19 @@ export class UsersController {
     )
     id: number,
   ) {
-    return this.userService.findById(id)
+    return this.userService.findById(id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() name: string) {
-    return `This action update a #${id} user -> ${name}`;
+  @Patch(':id')
+  update(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.update(+id, updateUserDto)
   }
 
   @Delete(':id')
