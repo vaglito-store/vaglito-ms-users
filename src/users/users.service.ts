@@ -48,8 +48,11 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
+
+    const { id: __, ...data} = updateUserDto;
+
     const product = await this.findById(id);
-    await this.userRepository.update(id, updateUserDto);
+    await this.userRepository.update(id, data);
     return product;
   }
 
