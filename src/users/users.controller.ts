@@ -14,12 +14,12 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 export class UsersController {
   constructor(private userService: UserService) {}
 
-  @MessagePattern({ cmd: 'create_product' })
+  @MessagePattern({ cmd: 'create_users' })
   async create(@Payload() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @MessagePattern({ cmd: 'find_all_products' })
+  @MessagePattern({ cmd: 'find_all_users' })
   async findAll(@Payload() paginationDto: PaginationDto) {
     try {
       const users = await this.userService.findAll(paginationDto);
@@ -38,7 +38,7 @@ export class UsersController {
     }
   }
 
-  @MessagePattern({ cmd: 'find_one_product' })
+  @MessagePattern({ cmd: 'find_one_user' })
   async findOne(
     @Payload(
       'id',
@@ -49,14 +49,14 @@ export class UsersController {
     return this.userService.findById(id);
   }
 
-  @MessagePattern({ cmd: 'update_product' })
+  @MessagePattern({ cmd: 'update_users' })
   update(
     @Payload() updateUserDto: UpdateUserDto,
   ) {
     return this.userService.update(updateUserDto.id, updateUserDto);
   }
 
-  @MessagePattern({ cmd: 'delete_product' })
+  @MessagePattern({ cmd: 'delete_users' })
   remove(
     @Payload(
       'id',
